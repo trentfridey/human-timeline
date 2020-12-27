@@ -12,8 +12,10 @@ Therefore I set out to make a calendar that is more realistic.
 
 ## How 
 
+I used the calculations from [this NOAA PDF](https://www.esrl.noaa.gov/gmd/grad/solcalc/solareqns.PDF) to calculate the sunrise and sunsets for my (approximate) location.
+
 This uses [React-timeseries-charts](https://software.es.net/react-timeseries-charts/#/guide/start) for the plotting.
-For the sunrise/sunset data, I use the free [Sunrise-Sunset API](https://sunrise-sunset.org/api).
+
 
 
 ## Building and running on localhost
