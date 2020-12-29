@@ -92,17 +92,43 @@ class App extends React.Component {
 
     return { sunrise, sunset }
   }
-  
+  fractionalHoursToHoursMinutes (hours) {
+    const totalMinutes = Math.floor(hours * 60)
+    const minutes = totalMinutes % 60
+    const wholeHours = (totalMinutes - minutes) / 60
+    return `${wholeHours < 10 ? '0'+wholeHours : wholeHours}:${minutes < 10 ? '0'+minutes : minutes} ${wholeHours < 12 ? 'AM' : 'PM'}`
+  }
 
   render() {
     const style = styler([
       {key: 'sunset', color: "steelblue", width: 2}, 
       {key: 'sunrise', color: "goldenrod", width: 2}
     ])
+    let riseLabel, setLabel, hoursOfDaylight;
+    if (this.state.tracker) {
+      const index = this.state.sunSeries.bisect(this.state.tracker);
+      const trackerEvent = this.state.sunSeries.at(index);
+      hoursOfDaylight = -1*(trackerEvent.get('sunrise') - trackerEvent.get('sunset'))
+      riseLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunrise'))
+      setLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunset'))
+    }
     return (
       <>
         <div>
-          <ChartContainer trackerPosition={this.state.tracker} onMouseMove={(x, y) => this.handleMouseMove(x, y)} onTrackerChanged={this.handleTrackerChanged} title={"Timeline"} showGrid={true} enablePanZoom={true} timeRange={this.state.timeRange} width={800} onTimeRangeChanged={this.handleTimeRangeChange}>
+          <ChartContainer 
+            trackerPosition={this.state.tracker} 
+            trackerValues={"HelloWorld"}
+            trackerHintHeight={100}
+            trackerHintWidth={100}
+            onMouseMove={(x, y) => this.handleMouseMove(x, y)} 
+            onTrackerChanged={this.handleTrackerChanged} 
+            title={"Timeline"} 
+            showGrid={true} 
+            enablePanZoom={true} 
+            timeRange={this.state.timeRange} 
+            width={800} 
+            onTimeRangeChanged={this.handleTimeRangeChange}
+          >
             <ChartRow height="400">
               <YAxis format={'.2s'} tickCount={25} showGrid={true} id="axis1" label="hours" min={24} max={0} width="60" type="linear"/>
               <Charts>
@@ -111,8 +137,13 @@ class App extends React.Component {
               </Charts>
             </ChartRow>
           </ChartContainer>
-          <Legend type="line" align="right" style={style} categories={[{key: 'sunrise', label: 'sunrise'},{key: 'sunset', label:'sunset'}]}/>
+          <Legend type="line" align="right" style={style} categories={
+            [
+              {key: 'sunrise', label: 'sunrise', value: riseLabel},
+              {key: 'sunset', label:'sunset', value: setLabel}]
+            }/>
         </div>
+        <div>Hours of Daylight: { hoursOfDaylight }</div>
       </>
     );
   }
