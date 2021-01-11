@@ -16,6 +16,13 @@ I used the calculations from [this NOAA PDF](https://www.esrl.noaa.gov/gmd/grad/
 
 This uses [React-timeseries-charts](https://software.es.net/react-timeseries-charts/#/guide/start) for the plotting.
 
+## TODO
+
+- [ ] Add Baselines for Solstices and Equinoxes
+- [ ] Add phases of Moon
+- [x] Add graph of hours of daylight
+- [x] Make Responsive
+- [ ] Deploy to Netlify
 
 
 ## Building and running on localhost
