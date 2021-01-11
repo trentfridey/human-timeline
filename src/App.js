@@ -3,7 +3,8 @@ import React from "react";
 import tz from 'timezone';
 import { TimeRange, TimeRangeEvent, TimeSeries } from 'pondjs'
 import { 
-  Charts, 
+	Resizable,
+	Charts, 
   ChartContainer, 
   ChartRow, 
   YAxis, 
@@ -11,7 +12,8 @@ import {
   TimeMarker, 
   styler,
   CrossHairs,
-  Legend
+  Legend,
+  Baseline,
 } from 'react-timeseries-charts'
 
 const days = 24*60*60*1000
@@ -25,12 +27,14 @@ class App extends React.Component {
     this.calculateSunriseSunset = this.calculateSunriseSunset.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
 
-    const window = 15*days
+    const window = 365*days
     const defaultTimeRange = [Date.now()-window, Date.now()+window]
     this.location = { lat: 35.835, lng: -78.783 }
     const sunSeries = this.generateSunSeries(new TimeRange(defaultTimeRange))
     this.state = { sunSeries, timeRange: new TimeRange(defaultTimeRange), x: null, y: null, tracker: null}
 
+    this.solstice = { summer: new Date(), winter: new Date() }
+    this.equinox = { spring: new Date(), autumn: new Date() }
   }
   generateSunSeries (timeRange) {
     const sunEvents = []
@@ -44,8 +48,7 @@ class App extends React.Component {
     return sunSeries
   }
   handleTimeRangeChange(timeRange){
-    const newSeries = this.generateSunSeries(timeRange)
-    this.setState({ timeRange, sunSeries: newSeries })
+    this.setState({ timeRange })
   }
   handleTrackerChanged(tracker) {
     if (!tracker) {
@@ -96,7 +99,7 @@ class App extends React.Component {
     const totalMinutes = Math.floor(hours * 60)
     const minutes = totalMinutes % 60
     const wholeHours = (totalMinutes - minutes) / 60
-    return `${wholeHours < 10 ? '0'+wholeHours : wholeHours}:${minutes < 10 ? '0'+minutes : minutes} ${wholeHours < 12 ? 'AM' : 'PM'}`
+    return `${wholeHours < 10 ? '0'+wholeHours : wholeHours}:${minutes < 10 ? '0'+minutes : minutes}`
   }
 
   render() {
@@ -114,7 +117,8 @@ class App extends React.Component {
     }
     return (
       <>
-        <div>
+				<div style={{width: '100%'}}>
+						<Resizable>
           <ChartContainer 
             trackerPosition={this.state.tracker} 
             trackerValues={"HelloWorld"}
@@ -126,24 +130,32 @@ class App extends React.Component {
             showGrid={true} 
             enablePanZoom={true} 
             timeRange={this.state.timeRange} 
-            width={800} 
+            
             onTimeRangeChanged={this.handleTimeRangeChange}
           >
             <ChartRow height="400">
               <YAxis format={'.2s'} tickCount={25} showGrid={true} id="axis1" label="hours" min={24} max={0} width="60" type="linear"/>
               <Charts>
                 <LineChart info={[{label: 't', value: 2}]} axis="axis1" style={style} columns={["sunrise","sunset"]} series={this.state.sunSeries} />
-                <TimeMarker axis="axis1" time={new Date()} infoStyle={{line: {strokeWidth: "2px", stroke: "#83C2FC"}}} />
+                <Baseline axis="axis1" value={this.state.sunSeries.min('sunrise')} label="Earliest Sunrise" position="right"/>
+                <Baseline axis="axis1" value={this.state.sunSeries.max('sunrise')} label="Latest Sunrise" position="right"/>
+                <Baseline axis="axis1" value={this.state.sunSeries.min('sunset')} label="Earliest Sunset" position="right"/>
+                <Baseline axis="axis1" value={this.state.sunSeries.max('sunset')} label="Latest Sunset" position="right"/>
+                <Baseline axis="axis1" value={this.state.sunSeries.avg('sunrise')} label="Avg Sunrise" position="right"/>
+                <Baseline axis="axis1" value={this.state.sunSeries.avg('sunset')} label="Avg Sunset" position="right"/>
+
+                <TimeMarker axis="axis1" time={new Date()} label="today" infoStyle={{line: {strokeWidth: "2px", stroke: "#83C2FC"}}} />
               </Charts>
             </ChartRow>
-          </ChartContainer>
+								</ChartContainer>
+										</Resizable>
           <Legend type="line" align="right" style={style} categories={
             [
               {key: 'sunrise', label: 'sunrise', value: riseLabel},
               {key: 'sunset', label:'sunset', value: setLabel}]
             }/>
         </div>
-        <div>Hours of Daylight: { hoursOfDaylight }</div>
+          <div>Hours of Daylight: { (Math.floor(hoursOfDaylight *60) - Math.floor(hoursOfDaylight *60) % 60) / 60  }hrs {Math.floor(hoursOfDaylight *60) % 60}min</div>
       </>
     );
   }
