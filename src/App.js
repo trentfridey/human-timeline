@@ -1,6 +1,6 @@
 
 import React from "react";
-import tz from 'timezone';
+import { calculateSunriseSunset } from './util/calcSun' 
 import { TimeRange, TimeRangeEvent, TimeSeries } from 'pondjs'
 import { 
 	Resizable,
@@ -16,7 +16,10 @@ import {
   Baseline,
 } from 'react-timeseries-charts'
 
-const days = 24*60*60*1000
+const seconds = 1000
+const minutes = 60*seconds
+const hours = 60*minutes
+const days = 24*hours
 
 class App extends React.Component {
   constructor (props){
@@ -24,24 +27,33 @@ class App extends React.Component {
     this.generateSunSeries = this.generateSunSeries.bind(this)
     this.handleTimeRangeChange = this.handleTimeRangeChange.bind(this)
     this.handleTrackerChanged = this.handleTrackerChanged.bind(this)
-    this.calculateSunriseSunset = this.calculateSunriseSunset.bind(this)
     this.handleMouseMove = this.handleMouseMove.bind(this)
 
-    const window = 365*days
-    const defaultTimeRange = [Date.now()-window, Date.now()+window]
+    const window = 240*days
+    const defaultTimeRange = [Date.now()-window/2, Date.now()+3*window/2]
     this.location = { lat: 35.835, lng: -78.783 }
     const sunSeries = this.generateSunSeries(new TimeRange(defaultTimeRange))
-    this.state = { sunSeries, timeRange: new TimeRange(defaultTimeRange), x: null, y: null, tracker: null}
 
-    this.solstice = { summer: new Date(), winter: new Date() }
-    this.equinox = { spring: new Date(), autumn: new Date() }
+    this.state = { 
+      sunSeries, 
+      timeRange: new TimeRange(defaultTimeRange), 
+      x: null, 
+      y: null, 
+      tracker: null,
+      markers: {
+        solstice: true,
+        equinox: true,
+        DST: true
+      }
+    }
+
   }
   generateSunSeries (timeRange) {
     const sunEvents = []
     const start = timeRange.toJSON()[0]
     const end = timeRange.toJSON()[1]
     for(let i = start; i <= end; i += 1*days) {
-      const { sunrise, sunset } = this.calculateSunriseSunset(new Date(i))
+      const { sunrise, sunset } = calculateSunriseSunset(this.location, new Date(i))
       sunEvents.push([i,sunrise,sunset])
     }
     const sunSeries = new TimeSeries({ name: 'sunrises', columns: ["time","sunrise", "sunset"], points: sunEvents})
@@ -60,40 +72,16 @@ class App extends React.Component {
   handleMouseMove (x, y)  {
     this.setState({ x, y });
   }
-  calculateSunriseSunset (date) {
-    const { lat, lng } = this.location
-    const { sin, cos, tan,  acos, PI } = Math
-    const degrees = PI / 180
-    const radians = 180 / PI
-    const dayOfYear = Number.parseInt(tz(date, "%j"))
-    const hour = date.getHours()
-    const timeOffset = date.getTimezoneOffset()
-    
-    const fracYear = 2*PI / 365 * (dayOfYear -1 + (hour - 12)/24)
-
-    const equationOfTime = 229.18 * (7.5e-5 
-                                  + 1.868e-3 * cos(fracYear) 
-                                  - 3.2e-2 * sin(fracYear) 
-                                  - 1.4615e-2 * cos(2*fracYear) 
-                                  - 4.0849e-2 * sin(2*fracYear)
-                                  )
-    const declination = 6.918e-3 
-                      - 3.99912e-1 * cos(fracYear) 
-                      + 7.0257e-2 * sin(fracYear) 
-                      - 6.758e-3 * cos(2*fracYear) 
-                      + 9.07e-4 * sin(2*fracYear) 
-                      - 2.697e-3 * cos(3*fracYear) 
-                      + 1.48e-3 * sin(3*fracYear)
-    const hourAngle = acos(
-      cos(90.833*degrees) 
-      / (cos(lat*degrees) * cos(declination)) 
-      - (tan(lat*degrees) * tan(declination))
-    )
-
-    const sunrise = ((720 - 4 * (lng + hourAngle*radians) - equationOfTime) - timeOffset)/60
-    const sunset = ((720 - 4 * (lng - hourAngle*radians) - equationOfTime) - timeOffset)/60
-
-    return { sunrise, sunset }
+  formatRelativeTicks (d) {
+    if(!d) return 'None'
+    const delta = (d - Date.now())
+    return `${Math.floor(delta/days)} d` 
+  }
+  formatHours (hours) {
+    if(!hours) return '--'
+    const roundedMinutes = Math.floor(hours*60)
+    const wholeHours = (roundedMinutes - roundedMinutes % 60)/60
+    return `${wholeHours}hrs ${Math.floor(hours *60) % 60}min`
   }
   fractionalHoursToHoursMinutes (hours) {
     const totalMinutes = Math.floor(hours * 60)
@@ -116,9 +104,9 @@ class App extends React.Component {
       setLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunset'))
     }
     return (
-      <>
-				<div style={{width: '100%'}}>
-						<Resizable>
+    <>
+      <div style={{width: '100%'}}>
+        <Resizable>
           <ChartContainer 
             trackerPosition={this.state.tracker} 
             trackerValues={"HelloWorld"}
@@ -130,8 +118,8 @@ class App extends React.Component {
             showGrid={true} 
             enablePanZoom={true} 
             timeRange={this.state.timeRange} 
-            
             onTimeRangeChanged={this.handleTimeRangeChange}
+            format={this.formatRelativeTicks}
           >
             <ChartRow height="400">
               <YAxis format={'.2s'} tickCount={25} showGrid={true} id="axis1" label="hours" min={24} max={0} width="60" type="linear"/>
@@ -144,18 +132,48 @@ class App extends React.Component {
                 <Baseline axis="axis1" value={this.state.sunSeries.avg('sunrise')} label="Avg Sunrise" position="right"/>
                 <Baseline axis="axis1" value={this.state.sunSeries.avg('sunset')} label="Avg Sunset" position="right"/>
 
-                <TimeMarker axis="axis1" time={new Date()} label="today" infoStyle={{line: {strokeWidth: "2px", stroke: "#83C2FC"}}} />
+                <TimeMarker axis="axis1" time={new Date()} label="today" infoStyle={{line: {strokeWidth: "2px", stroke: "black"}}} />
+                {/* Need to have these calculate to match min and max daylight respectively */}
+                <TimeMarker visible={this.state.markers.solstice} label="winter solstice" axis="axis1" time={new Date('2020/12/21 12:00:00')} infoStyle={{ line: { strokeWidth: "2px", stroke: 'blue' }}}/>
+                <TimeMarker visible={this.state.markers.solstice} label="summer solstice" axis="axis1" time={new Date('2021/06/22 12:00:00')} infoStyle={{ line: { strokeWidth: "2px", stroke: 'orange' }}}/>
+                {/* Need to have these calculate to match intersection with average */}
+                <TimeMarker visible={this.state.markers.equinox} label="spring equinox" axis="axis1" time={new Date('2021/03/20 12:00:00')} infoStyle={{ line: {strokeWidth: "2px", stroke: "gold"}}} />
+                <TimeMarker visible={this.state.markers.equinox} label="fall equinox" axis="axis1" time={new Date('2021/09/22 12:00:00')}  infoStyle={{ line: {strokeWidth: "2px", stroke: "gold"}}} />
+                {/* Need to have these events plot on defintion: second sunday in march & first sunday in november; auto-repeat */}
+                <TimeMarker visible={this.state.markers.DST} label="DST starts" axis="axis1" time={new Date('2021/03/14 01:00:00')} infoStyle={{ line: {strokeWidth: "2px", stroke: "pink"}}} />
+                <TimeMarker visible={this.state.markers.DST} label="DST ends" axis="axis1" time={new Date('2020/11/01 02:00:00')} infoStyle={{ line: {strokeWidth: "2px", stroke: "lightblue"}}} />
+                
               </Charts>
             </ChartRow>
-								</ChartContainer>
-										</Resizable>
-          <Legend type="line" align="right" style={style} categories={
-            [
+				  </ChartContainer>
+				</Resizable>
+        <Legend type="line" align="right" style={style} categories={[
               {key: 'sunrise', label: 'sunrise', value: riseLabel},
-              {key: 'sunset', label:'sunset', value: setLabel}]
-            }/>
+              {key: 'sunset', label:'sunset', value: setLabel}
+            ]}
+        />
         </div>
-          <div>Hours of Daylight: { (Math.floor(hoursOfDaylight *60) - Math.floor(hoursOfDaylight *60) % 60) / 60  }hrs {Math.floor(hoursOfDaylight *60) % 60}min</div>
+          <div>
+            Location: { `Lat: ${this.location.lat}, Long: ${this.location.lng}` }
+            <br/>
+            Today: { `${new Date().toDateString()}` }
+            <br/>
+            Hover Date: { `${this.state.tracker?.toDateString() ?? 'None'}`}
+            <br/>
+            Delta: { `${this.formatRelativeTicks(this.state.tracker)}` }
+            <br/>
+            Hours of Daylight: { this.formatHours(hoursOfDaylight) }
+            { Object.entries(this.state.markers).map(([name, value]) => 
+              <div key={name}>
+                <input 
+                  type="checkbox" 
+                  checked={value} 
+                  onChange={() => this.setState((prev) => ({markers: {...prev.markers, [name]: !value}}))}
+                />
+                <label>{name}</label>
+              </div>
+            )}
+          </div>
       </>
     );
   }
