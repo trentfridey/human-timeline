@@ -22,8 +22,8 @@ This uses [React-timeseries-charts](https://software.es.net/react-timeseries-cha
 - [x] Add Baselines for Solstices and Equinoxes
 - [x] Add graph of hours of daylight
 - [x] Make Responsive
-- [ ] Deploy to Netlify
-- [ ] label offset in days relative to today
+- [x] label offset in days relative to today
+- [ ] Deploy
 
 ## Building and running on localhost
 
