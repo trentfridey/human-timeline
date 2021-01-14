@@ -1094,4 +1094,4 @@ var e;!function(){"use strict";var o;try{o="undefined"!=typeof Intl&&void 0!==In
 },{}],"Focm":[function(require,module,exports) {
 "use strict";var e=u(require("react")),r=u(require("react-dom")),t=u(require("./App"));function u(e){return e&&e.__esModule?e:{default:e}}require("./styles.scss");var a=document.getElementById("app");r.default.render(e.default.createElement(t.default,null),a);
 },{"react":"n8MK","react-dom":"NKHc","./App":"lY9v","./styles.scss":"I4sy"}]},{},["Focm"], null)
-//# sourceMappingURL=/src.3c0713df.js.map
+//# sourceMappingURL=/human-timeline/src.3c0713df.js.map
