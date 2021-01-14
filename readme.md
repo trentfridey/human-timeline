@@ -18,8 +18,8 @@ This uses [React-timeseries-charts](https://software.es.net/react-timeseries-cha
 
 ## TODO
 
-- [ ] Add Baselines for Solstices and Equinoxes
 - [ ] Add phases of Moon
+- [x] Add Baselines for Solstices and Equinoxes
 - [x] Add graph of hours of daylight
 - [x] Make Responsive
 - [ ] Deploy to Netlify
