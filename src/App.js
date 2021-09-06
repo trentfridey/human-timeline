@@ -95,21 +95,25 @@ class App extends React.Component {
       {key: 'sunset', color: "steelblue", width: 2}, 
       {key: 'sunrise', color: "goldenrod", width: 2}
     ])
-    let riseLabel, setLabel, hoursOfDaylight;
-    if (this.state.tracker) {
-      const index = this.state.sunSeries.bisect(this.state.tracker);
-      const trackerEvent = this.state.sunSeries.at(index);
-      hoursOfDaylight = -1*(trackerEvent.get('sunrise') - trackerEvent.get('sunset'))
-      riseLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunrise'))
-      setLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunset'))
-    }
+    const hoverDate = this.state.tracker ? this.state.tracker : new Date()
+    const index = this.state.sunSeries.bisect(hoverDate)
+    const trackerEvent = this.state.sunSeries.at(index);
+    const hoursOfDaylight = -1*(trackerEvent.get('sunrise') - trackerEvent.get('sunset'))
+    const riseLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunrise'))
+    const setLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunset')-12)
     return (
     <>
+      <div>
+        <h2>Date.....{hoverDate.getMonth() + 1}/{hoverDate.getDate()}/{hoverDate.getFullYear()}</h2>
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+        <h2 style={{ backgroundColor: 'goldenrod'}}>Sunrise..{riseLabel}AM</h2>
+        <h2 style={{ backgroundColor: 'steelblue'}}>Sunset...{setLabel}PM</h2>
+        </div>
+      </div>
       <div style={{width: '100%'}}>
         <Resizable>
           <ChartContainer 
             trackerPosition={this.state.tracker} 
-            trackerValues={"HelloWorld"}
             trackerHintHeight={100}
             trackerHintWidth={100}
             onMouseMove={(x, y) => this.handleMouseMove(x, y)} 
@@ -122,7 +126,7 @@ class App extends React.Component {
             format={this.formatRelativeTicks}
           >
             <ChartRow height="400">
-              <YAxis format={'.2s'} tickCount={25} showGrid={true} id="axis1" label="hours" min={24} max={0} width="60" type="linear"/>
+              <YAxis format={'.2s'} tickCount={25} showGrid={true} id="axis1" min={24} max={0} width="20" type="linear"/>
               <Charts>
                 <LineChart info={[{label: 't', value: 2}]} axis="axis1" style={style} columns={["sunrise","sunset"]} series={this.state.sunSeries} />
                 <Baseline axis="axis1" value={this.state.sunSeries.min('sunrise')} label="Earliest Sunrise" position="right"/>
@@ -157,8 +161,6 @@ class App extends React.Component {
             Location: { `Lat: ${this.location.lat}, Long: ${this.location.lng}` }
             <br/>
             Today: { `${new Date().toDateString()}` }
-            <br/>
-            Hover Date: { `${this.state.tracker?.toDateString() ?? 'None'}`}
             <br/>
             Delta: { `${this.formatRelativeTicks(this.state.tracker)}` }
             <br/>
