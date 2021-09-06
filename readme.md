@@ -45,6 +45,12 @@ To create a production build:
 npm run build-prod
 ```
 
+To deploy:
+
+```sh
+npm run deploy
+```
+
 ## Running
 
 Open the file `dist/index.html` in your browser
