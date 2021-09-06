@@ -23,7 +23,7 @@ This uses [React-timeseries-charts](https://software.es.net/react-timeseries-cha
 - [x] Add graph of hours of daylight
 - [x] Make Responsive
 - [x] label offset in days relative to today
-- [ ] Deploy
+- [x] Deploy
 
 ## Building and running on localhost
 
