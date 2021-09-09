@@ -84799,24 +84799,26 @@ var App = /*#__PURE__*/function (_React$Component) {
       var hoverDate = this.state.tracker ? this.state.tracker : new Date();
       var index = this.state.sunSeries.bisect(hoverDate);
       var trackerEvent = this.state.sunSeries.at(index);
-      var hoursOfDaylight = -1 * (trackerEvent.get('sunrise') - trackerEvent.get('sunset'));
-      var riseLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunrise'));
-      var setLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunset') - 12);
-      return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Date.....", hoverDate.getMonth() + 1, "/", hoverDate.getDate(), "/", hoverDate.getFullYear()), /*#__PURE__*/_react.default.createElement("div", {
-        style: {
-          display: 'flex',
-          flexDirection: 'row',
-          justifyContent: 'space-between'
-        }
-      }, /*#__PURE__*/_react.default.createElement("h2", {
+      var sunrise = trackerEvent.get('sunrise');
+      var sunset = trackerEvent.get('sunset');
+      var hoursOfDaylight = sunset - sunrise;
+      var riseLabel = this.fractionalHoursToHoursMinutes(sunrise);
+      var middayLabel = this.fractionalHoursToHoursMinutes(sunrise + hoursOfDaylight / 2);
+      var setLabel = this.fractionalHoursToHoursMinutes(sunset - 12);
+      return /*#__PURE__*/_react.default.createElement(_react.default.Fragment, null, /*#__PURE__*/_react.default.createElement("div", null, /*#__PURE__*/_react.default.createElement("h2", null, "Date.....", hoverDate.getMonth() + 1, "/", hoverDate.getDate(), "/", hoverDate.getFullYear()), /*#__PURE__*/_react.default.createElement("h2", {
         style: {
           backgroundColor: 'goldenrod'
         }
       }, "Sunrise..", riseLabel, "AM"), /*#__PURE__*/_react.default.createElement("h2", {
         style: {
-          backgroundColor: 'steelblue'
+          backgroundColor: 'goldenrod'
         }
-      }, "Sunset...", setLabel, "PM"))), /*#__PURE__*/_react.default.createElement("div", {
+      }, "Midday...", middayLabel), /*#__PURE__*/_react.default.createElement("h2", {
+        style: {
+          backgroundColor: 'steelblue',
+          color: "white"
+        }
+      }, "Sunset...", setLabel, "PM")), /*#__PURE__*/_react.default.createElement("div", {
         style: {
           width: '100%'
         }
@@ -85116,7 +85118,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "38573" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36237" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
