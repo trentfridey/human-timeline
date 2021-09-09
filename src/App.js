@@ -98,17 +98,19 @@ class App extends React.Component {
     const hoverDate = this.state.tracker ? this.state.tracker : new Date()
     const index = this.state.sunSeries.bisect(hoverDate)
     const trackerEvent = this.state.sunSeries.at(index);
-    const hoursOfDaylight = -1*(trackerEvent.get('sunrise') - trackerEvent.get('sunset'))
-    const riseLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunrise'))
-    const setLabel = this.fractionalHoursToHoursMinutes(trackerEvent.get('sunset')-12)
+    const sunrise = trackerEvent.get('sunrise');
+    const sunset = trackerEvent.get('sunset');
+    const hoursOfDaylight = (sunset - sunrise)
+    const riseLabel = this.fractionalHoursToHoursMinutes(sunrise)
+    const middayLabel = this.fractionalHoursToHoursMinutes(sunrise + hoursOfDaylight / 2)
+    const setLabel = this.fractionalHoursToHoursMinutes(sunset-12)
     return (
     <>
       <div>
         <h2>Date.....{hoverDate.getMonth() + 1}/{hoverDate.getDate()}/{hoverDate.getFullYear()}</h2>
-        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
         <h2 style={{ backgroundColor: 'goldenrod'}}>Sunrise..{riseLabel}AM</h2>
-        <h2 style={{ backgroundColor: 'steelblue'}}>Sunset...{setLabel}PM</h2>
-        </div>
+        <h2 style={{ backgroundColor: 'goldenrod'}}>Midday...{middayLabel}</h2>
+        <h2 style={{ backgroundColor: 'steelblue', color: "white"}}>Sunset...{setLabel}PM</h2>
       </div>
       <div style={{width: '100%'}}>
         <Resizable>
