@@ -1,1 +1,0 @@
-{"version":3,"sources":["styles.scss"],"names":[],"mappings":"AAEA,GACE,UAHc,CAId,sBAEF,GACE","file":"src.5518edc7.css","sourceRoot":"../src","sourcesContent":["$primary-color: white;\n$bg: black;\nh1 {\n  color: $primary-color;\n  background-color: $bg;\n}\nh2 {\n  font-family: monospace;\n}"]}
