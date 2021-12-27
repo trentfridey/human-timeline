@@ -84961,20 +84961,20 @@ var App = /*#__PURE__*/function (_React$Component) {
           backgroundColor: 'white',
           border: '5px solid black'
         })
-      }, "Date....", hoverDate.getMonth() + 1, "/", hoverDate.getDate(), "/", hoverDate.getFullYear()), /*#__PURE__*/_react.default.createElement("h2", {
+      }, "Date: ", hoverDate.getMonth() + 1, "/", hoverDate.getDate(), "/", hoverDate.getFullYear()), /*#__PURE__*/_react.default.createElement("h2", {
         style: _objectSpread(_objectSpread({}, h2Style), {}, {
           backgroundColor: 'gold'
         })
-      }, "Sunrise...", riseLabel, "AM"), /*#__PURE__*/_react.default.createElement("h2", {
+      }, "Sunrise: ", riseLabel, "AM"), /*#__PURE__*/_react.default.createElement("h2", {
         style: _objectSpread(_objectSpread({}, h2Style), {}, {
           backgroundColor: 'orange'
         })
-      }, "Midday......", middayLabel), /*#__PURE__*/_react.default.createElement("h2", {
+      }, "Midday: ", middayLabel), /*#__PURE__*/_react.default.createElement("h2", {
         style: _objectSpread(_objectSpread({}, h2Style), {}, {
           backgroundColor: 'steelblue',
           color: "white"
         })
-      }, "Sunset....", setLabel, "PM"), /*#__PURE__*/_react.default.createElement("h2", {
+      }, "Sunset: ", setLabel, "PM"), /*#__PURE__*/_react.default.createElement("h2", {
         style: _objectSpread(_objectSpread({}, h2Style), {}, {
           border: '5px solid black'
         })
@@ -84985,7 +84985,8 @@ var App = /*#__PURE__*/function (_React$Component) {
         })
       }, "Remaining Hours: ", this.formatHours(remainingHours))), /*#__PURE__*/_react.default.createElement("div", {
         style: {
-          display: 'flex'
+          display: 'flex',
+          margin: '5px 0 5px 0'
         }
       }, /*#__PURE__*/_react.default.createElement("button", {
         onClick: function onClick() {
@@ -85285,7 +85286,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "40145" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "46565" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
