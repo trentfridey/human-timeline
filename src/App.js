@@ -191,14 +191,14 @@ class App extends React.Component {
         🌞
       </div>
       <div>
-        <h2 style={{ ...h2Style, backgroundColor: 'white', border: '5px solid black' }}>Date....{hoverDate.getMonth() + 1}/{hoverDate.getDate()}/{hoverDate.getFullYear()}</h2>
-        <h2 style={{ ...h2Style, backgroundColor: 'gold' }}>Sunrise...{riseLabel}AM</h2>
-        <h2 style={{ ...h2Style, backgroundColor: 'orange'}}>Midday......{middayLabel}</h2>
-        <h2 style={{ ...h2Style, backgroundColor: 'steelblue', color: "white"}}>Sunset....{setLabel}PM</h2>
+        <h2 style={{ ...h2Style, backgroundColor: 'white', border: '5px solid black' }}>Date: {hoverDate.getMonth() + 1}/{hoverDate.getDate()}/{hoverDate.getFullYear()}</h2>
+        <h2 style={{ ...h2Style, backgroundColor: 'gold' }}>Sunrise: {riseLabel}AM</h2>
+        <h2 style={{ ...h2Style, backgroundColor: 'orange'}}>Midday: {middayLabel}</h2>
+        <h2 style={{ ...h2Style, backgroundColor: 'steelblue', color: "white"}}>Sunset: {setLabel}PM</h2>
         <h2 style={{ ...h2Style, border: '5px solid black' }} >Daylight Hours: { this.formatHours(hoursOfDaylight) }</h2>
         <h2 style={{ ...h2Style, border: '5px solid black', borderTop: 'none' }} >Remaining Hours: {this.formatHours(remainingHours)}</h2>
       </div>
-        <div style={{display: 'flex'}}>
+        <div style={{display: 'flex', margin: '5px 0 5px 0'}}>
             <button onClick={()=>this.handleNav(-1)} style={{ ...buttonStyle, color: 'white',  backgroundColor: 'steelblue',  borderBottom: '5px solid blue'  }} >
             { '< Previous' }
             </button>
