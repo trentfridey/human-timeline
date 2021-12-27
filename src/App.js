@@ -178,11 +178,12 @@ class App extends React.Component {
     const buttonStyle = { 
       fontWeight: 'bold', 
       fontSize: '20px',
-      padding: 20, 
+      height: '60px',
       flex: '1 0 auto', 
       textAlign: 'left', 
       cursor: 'pointer',
-      border: 'none'
+      border: 'none',
+      fontFamily: 'monospace'
     }
     return (
     <>
@@ -197,6 +198,17 @@ class App extends React.Component {
         <h2 style={{ ...h2Style, border: '5px solid black' }} >Daylight Hours: { this.formatHours(hoursOfDaylight) }</h2>
         <h2 style={{ ...h2Style, border: '5px solid black', borderTop: 'none' }} >Remaining Hours: {this.formatHours(remainingHours)}</h2>
       </div>
+        <div style={{display: 'flex'}}>
+            <button onClick={()=>this.handleNav(-1)} style={{ ...buttonStyle, color: 'white',  backgroundColor: 'steelblue',  borderBottom: '5px solid blue'  }} >
+            { '< Previous' }
+            </button>
+            <button style={{...buttonStyle, textAlign: 'center', borderBottom: '5px solid grey'}} onClick={()=>this.setState({tracker: new Date()})}>
+              {'Today'}
+            </button>
+            <button onClick={()=>this.handleNav(1)} style={{ ...buttonStyle, backgroundColor: 'gold',  textAlign: 'right', borderBottom: '5px solid orange' }} >
+              { 'Next  >' }
+            </button>
+          </div>
       <div style={{width: '100%', border: '1px solid black', overflow: 'hidden'}}>
         <Resizable>
           <ChartContainer 
@@ -240,14 +252,7 @@ class App extends React.Component {
 				</Resizable>
         </div>
           <div style={{ fontFamily: 'monospace'}}>
-          <div style={{display: 'flex'}}>
-            <button onClick={()=>this.handleNav(-1)} style={{ ...buttonStyle,  backgroundColor: 'steelblue',  borderBottom: '5px solid blue'  }} >
-            { '< Yesterday' }
-            </button>
-            <button onClick={()=>this.handleNav(1)} style={{ ...buttonStyle, backgroundColor: 'gold',  textAlign: 'right', borderBottom: '5px solid orange' }} >
-              { 'Tomorrow  >' }
-            </button>
-          </div>
+          
             Location: { `Lat: ${this.state.location.lat}, Long: ${this.state.location.lng}` }
             <br/>
           </div>
