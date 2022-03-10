@@ -1,0 +1,13 @@
+{
+  "short_name": "Weather",
+  "name": "Timeline",
+  "icons": [],
+  "start_url": "/",
+  "background_color": "gold",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "gold",
+  "shortcuts": [],
+  "description": "Sunrise / Sunset",
+  "screenshots": []
+}
