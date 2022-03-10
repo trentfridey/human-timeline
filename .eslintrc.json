@@ -12,9 +12,7 @@
     }
   },
   "extends": [
-    "eslint:recommended",
-    "plugin:prettier/recommended"
-  ],
+    "eslint:recommended"  ],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"

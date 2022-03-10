@@ -1,7 +1,7 @@
 
 import React from "react";
 import { calculateSunriseSunset } from './util/calcSun' 
-import { TimeRange, Time, TimeSeries } from 'pondjs'
+import { TimeRange, TimeSeries } from 'pondjs'
 import { 
 	Resizable,
 	Charts, 
@@ -248,7 +248,7 @@ class App extends React.Component {
                 })}
               </Charts>
             </ChartRow>
-				  </ChartContainer>
+          </ChartContainer>
 				</Resizable>
         </div>
           <div style={{ fontFamily: 'monospace'}}>
