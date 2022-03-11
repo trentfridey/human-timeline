@@ -1,7 +1,11 @@
 {
   "short_name": "Weather",
   "name": "Timeline",
-  "icons": [],
+  "icons": [  {
+    "src": "icon.svg",
+    "type": "image/svg",
+    "sizes": "any"
+  }],
   "start_url": "/",
   "background_color": "gold",
   "display": "standalone",
